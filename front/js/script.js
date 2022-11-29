@@ -13,13 +13,20 @@ init();
  * @returns Array
  */
 async function getCatalog() {
+    // call the API as a promise with fetch and soctk in const
     const response = await fetch(`http://localhost:3000/api/products`);
-    /*if (!response.ok) {
+
+    // What happen if response is false
+    if (!response.ok) {
         document
         .getElementById("items")
-        .innerHTML = "<h3>bientôt de retour !</h3>";
-    }*/
+        .innerHTML = "<h3>Bientôt de retour !</h3>";
+    }
+
+    // stock catalog in const to await a response in json format
     const catalog = await response.json()
+    console.log(catalog);
+    // return const
     return catalog
 }
 /**
@@ -27,15 +34,19 @@ async function getCatalog() {
  * @param {Array} catalog 
  */
 async function displayProduct(catalog) {
-    for (let product of catalog) {
+    // browse all products of array catalog one by one
+    for (let products of catalog) {
+        // Dom manipulation
         document
-            .getElementById("items")
+        //select id
+            .querySelector("#items")
+        // add HTML
             .innerHTML +=
-            `<a href="./product.html?id=${product._id}">
+            `<a href="./product.html?id=${products._id}">
                     <article>
-                        <img src="${product.imageUrl}" alt="${product.altTxt}">
-                        <h3 class="productName">${product.name}</h3>
-                        <p class="productDescription">${product.description}</p>
+                        <img src="${products.imageUrl}" alt="${products.altTxt}">
+                        <h3 class="productName">${products.name}</h3>
+                        <p class="productDescription">${products.description}</p>
                     </article>
                     </a>`;
     }
