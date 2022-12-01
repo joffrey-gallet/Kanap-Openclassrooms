@@ -78,8 +78,7 @@ function clickTocart(product) {
             findProduct.quantity++;
         } else{
             cart.push(product);
-            cart.sort(id);
-            console.log(cart);
+            //console.log(cart);
         }
         saveCart(cart);
     }    

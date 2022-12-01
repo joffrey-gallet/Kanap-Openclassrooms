@@ -4,29 +4,37 @@ function getCart() {
     if (cart === null) {
         return []
     } else {
-        return JSON.parse(cart)
+      return JSON.parse(cart)
     }
+  }
+  
+  let cart = getCart();
+  console.log(cart);
+  
+  
+  function saveCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart))
 }
-
-const cart = getCart();
-
-getProduct();
-
-/**
- * get product data
- * @param {object} productData
- */
-async function getProduct() {
+  
+  
+  getProductData();
+  
+  /**
+   * get product data
+   * @param {object} productData
+   */
+  async function getProductData() {
     for (const productLs of cart) {
-        const response = await fetch(`http://localhost:3000/api/products/${productLs.id}`);
-        const product = await response.json();
-        const productData = {
-            ...product,
-            ...productLs
-        }
-        //console.log(productData);
-        displayProduct(productData)
-        
+      const response = await fetch(`http://localhost:3000/api/products/${productLs.id}`);
+      const product = await response.json();
+
+      let productData = {
+        ...product,
+        ...productLs
+      }
+      //console.log(productData);
+      displayProduct(productData);
+      //return productData;
     }
 }
 
@@ -54,5 +62,50 @@ function displayProduct(productData) {
     </div>`
 }
 
+function removeFromCart(product) {
+  cart = cart.filter((p) => p.id !== product.id && p.color === product.color);
+  saveCart(cart);
+}
+
+function changeQuantity(product, quantity) {
+  let findProduct = cart.find((p) => p.id === product.id && p.color === product.color );
+  if (findProduct != undefined) {
+    findProduct.quantity = quantity;
+    if (quantity <= 0) {
+      removeFromCart(product);
+    } else {
+      saveCart(cart);
+    }
+  }
+}
 
 
+getTotalProducts();
+
+function getTotalProducts(cart) {
+  cart = getCart();
+  let totalProducts = 0;
+  for(let product of cart){
+    totalProducts += product.quantity;
+  }
+  //console.log(totalProducts);
+  document.querySelector("#totalQuantity").innerHTML = `${totalProducts}`
+  return totalProducts;
+}
+
+
+getTotalPrice();
+
+async function getTotalPrice(cart) {
+  cart = getCart();
+  
+  let totalPrice = 0;
+  
+  for (let product in cart) {
+    totalPrice += product.quantity * product.price;
+  }
+  document.querySelector("#totalPrice").innerHTML = `${totalPrice}`
+  console.log(totalPrice);
+  return totalPrice
+
+}
