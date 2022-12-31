@@ -1,6 +1,11 @@
+// let total price and products in global
 let totalProducts = 0;
 let totalPrice = 0;
 
+/**
+ * get cart in string in LS and parse it
+ * @returns object
+ */
 function getCart() {
   let cart = localStorage.getItem("cart");
   if (cart === null) {
@@ -10,9 +15,13 @@ function getCart() {
   }
 }
 
+//let cart in global
 let cart = getCart();
 
-
+/**
+ * save cart in LS
+ * @param {object} cart 
+ */
 function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart))
 }
@@ -28,6 +37,7 @@ async function getProductData() {
   totalProducts = 0;
   totalPrice = 0;
   let cart = getCart();
+  document.querySelector("#totalPrice").innerHTML = `${totalPrice}`;
   document.querySelector("#cart__items").innerHTML = "";
   for (const productLs of cart) {
     const response = await fetch(`http://localhost:3000/api/products/${productLs.id}`);
@@ -37,13 +47,16 @@ async function getProductData() {
       ...product,
       ...productLs
     }
-    //console.log(productData);
+    //refresh products and price
     displayProduct(productData);
     getTotalPrice(productData);
   }
   getTotalProducts();
 }
-
+/**
+ * display products
+ * @param {object} productData 
+ */
 function displayProduct(productData) {
   document.querySelector("#cart__items").innerHTML +=
     `<article class="cart__item" data-id="${productData.id}" data-color="${productData.color}">
@@ -67,15 +80,17 @@ function displayProduct(productData) {
       </div>
     </div>`
 
+  // Manage event when click on delete item
   const deleteItems = document.querySelectorAll(".deleteItem");
   for (const deleteButton of deleteItems) {
     deleteButton.addEventListener("click", (e) => {
       const button = e.target
       const article = button.closest("article");
       removeFromCart(article);
+      getProductData();
     })
   }
-
+  // manage event when change input value of quantity
   const itemQuantity = document.querySelectorAll(".itemQuantity");
   for (const inputQuantity of itemQuantity) {
     inputQuantity.addEventListener("change", (e) => {
@@ -83,12 +98,19 @@ function displayProduct(productData) {
     })
   }
 }
-
+/**
+ * remove from cart
+ * @param {object} article 
+ */
 function removeFromCart(article) {
+  //filter id and color of article to remove the good article
   cart = cart.filter((a) => a.id !== article.dataset.id || a.color !== article.dataset.color);
   saveCart(cart);
 }
-
+/**
+ * change quantity of article
+ * @param {*} e 
+ */
 function changeQuantity(e) {
   const inputQuantity = e.target;
   const article = inputQuantity.closest("article");
@@ -100,12 +122,17 @@ function changeQuantity(e) {
       removeFromCart(article)
     }
     saveCart(cart);
+    //refresh
     getProductData();
   }
 }
 
 
-
+/**
+ * get the total of products
+ * @param {object} cart 
+ * @returns number
+ */
 function getTotalProducts(cart) {
   cart = getCart();
   for (let product of cart) {
@@ -115,11 +142,14 @@ function getTotalProducts(cart) {
   return totalProducts;
 }
 
-
+/**
+ * sum of prices
+ * @param {object} product 
+ * @returns 
+ */
 async function getTotalPrice(product) {
   totalPrice += product.quantity * product.price;
   document.querySelector("#totalPrice").innerHTML = `${totalPrice}`
-  //console.log(totalPrice);
   return totalPrice
 }
 
@@ -135,7 +165,11 @@ const regexText = /^[a-zA-Z]*$/;
 const regexAddress = /[A-Za-z0-9'\.\-\s\,]/;
 const regexEmail = /^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/;
 
-
+/**
+ * check if value is true or false so if the texte is valid
+ * @param {string} value 
+ * @returns 
+ */
 function isTextValid(value) {
   if (value.search(regexText) !== 0) {
     return false;
@@ -143,7 +177,11 @@ function isTextValid(value) {
     return true;
   }
 }
-
+/**
+ * check if value is true or false so if adress is valid
+ * @param {object} value 
+ * @returns 
+ */
 function isAdressValid(value) {
   if (value.search(regexAddress) !== 0) {
     return false;
@@ -151,7 +189,11 @@ function isAdressValid(value) {
     return true;
   }
 }
-
+/**
+ * check if value is true or false so if email is valid
+ * @param {object} value 
+ * @returns 
+ */
 function isEmailValid(value) {
   if (value.search(regexEmail) !== 0) {
     return false;
@@ -159,6 +201,7 @@ function isEmailValid(value) {
     return true;
   }
 }
+
 inputFirstName.addEventListener("input", (e) => {
   if (!isTextValid(e.target.value)) {
     document.querySelector("#firstNameErrorMsg").innerHTML = "Le prénom doit contenir au moins 2 caractères et pas de chiffres.";
@@ -177,13 +220,10 @@ inputName.addEventListener("input", (e) => {
 })
 
 inputAddress.addEventListener("input", (e) => {
-
-
   if (!isAdressValid(e.target.value)) {
     document.querySelector("#addressErrorMsg").innerHTML = "Entrez une adresse valide";
   } else {
     document.querySelector("#addressErrorMsg").innerHTML = "";
-
   }
 })
 
@@ -192,13 +232,10 @@ inputCity.addEventListener("input", (e) => {
     document.querySelector("#cityErrorMsg").innerHTML = "Renseignez le nom de votre ville.";
   } else {
     document.querySelector("#cityErrorMsg").innerHTML = "";
-
   }
-
 })
 
 inputEmail.addEventListener("input", (e) => {
-
   if (!isEmailValid(e.target.value)) {
     document.querySelector("#emailErrorMsg").innerHTML = "Entrez une adresse email valide.";
   } else {
@@ -208,24 +245,33 @@ inputEmail.addEventListener("input", (e) => {
 
 const form = document.querySelector(".cart__order__form");
 
+/**
+ * post data to the api
+ * @param {object} body 
+ * @returns 
+ */
 async function postBody(body) {
-  const response = await fetch('http://localhost:3000/api/products/order', {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  })
-  const data = await response.json();
-  /*if (data) {
-    console.log(data);
-    return true
-  } else {
-    return false;
-  }*/
-  return data;
+  try {
+    const response = await fetch('http://localhost:3000/api/products/order', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    })
+
+    const data = await response.json();
+    return data;
+  }
+  catch (e) {
+    alert("Problème de connexion au serveur.")
+  }
 }
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!cart.length) {
+    alert("Votre panier est vide !")
+    return
+  }
   if (isTextValid(firstName.value) && isTextValid(lastName.value) && isAdressValid(address.value) && isTextValid(city.value) && isEmailValid(email.value)) {
     const contact = {
       firstName: firstName.value,
@@ -238,18 +284,15 @@ form.addEventListener('submit', async (e) => {
     for (const product of cart) {
       products.push(product.id)
     }
-    //console.log(products);
     const body = { contact, products };
     const postOk = await postBody(body);
 
 
     if (postOk) {
       window.location.href = `./confirmation.html?orderId=${postOk.orderId}`;
-      console.log(postOk);
     }
-    else {
-      console.log('not ok');
-    }
+  } else {
+    alert("Le formulaire n'est pas correctement rempli.")
   }
 })
 
