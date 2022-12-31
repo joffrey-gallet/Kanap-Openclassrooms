@@ -5,7 +5,6 @@ async function init() {
     const catalog = await getCatalog()
     displayProduct(catalog);
 }
-
 init();
 
 /**
@@ -13,22 +12,20 @@ init();
  * @returns Array
  */
 async function getCatalog() {
-    // call the API as a promise with fetch and soctk in const
+    // call the API as a promise with fetch (async/await method) and stock in const
     const response = await fetch(`http://localhost:3000/api/products`);
 
     // What happen if response is false
     if (!response.ok) {
-        document
-        .getElementById("items")
-        .innerHTML = "<h3>Bientôt de retour !</h3>";
+        document.getElementById("items").innerHTML = "<h3>Bientôt de retour !</h3>";
     }
 
     // stock catalog in const to await a response in json format
-    const catalog = await response.json()
-    console.log(catalog);
+    const catalog = await response.json();
     // return const
     return catalog
 }
+
 /**
  * display products on homepage
  * @param {Array} catalog 
@@ -38,9 +35,9 @@ async function displayProduct(catalog) {
     for (let products of catalog) {
         // Dom manipulation
         document
-        //select id
+            //select id
             .querySelector("#items")
-        // add HTML
+            // add HTML
             .innerHTML +=
             `<a href="./product.html?id=${products._id}">
                     <article>
