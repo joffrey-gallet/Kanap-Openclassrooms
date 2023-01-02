@@ -1,5 +1,6 @@
 /**
  * initial function
+ * order function
  */
 async function init() {
     const catalog = await getCatalog()

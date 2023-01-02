@@ -97,7 +97,7 @@ function addToCart(product) {
 }
 /**
  * change array cart in string and save cart in LS
- * @param {object} cart 
+ * @param {array} cart 
  */
 function saveCart(cart) {
     // order products by id

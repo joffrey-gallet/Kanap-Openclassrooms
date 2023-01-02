@@ -20,7 +20,7 @@ let cart = getCart();
 
 /**
  * save cart in LS
- * @param {object} cart 
+ * @param {array} cart 
  */
 function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart))
@@ -53,6 +53,8 @@ async function getProductData() {
   }
   getTotalProducts();
 }
+
+
 /**
  * display products
  * @param {object} productData 
@@ -90,6 +92,7 @@ function displayProduct(productData) {
       getProductData();
     })
   }
+
   // manage event when change input value of quantity
   const itemQuantity = document.querySelectorAll(".itemQuantity");
   for (const inputQuantity of itemQuantity) {
@@ -98,6 +101,8 @@ function displayProduct(productData) {
     })
   }
 }
+
+
 /**
  * remove from cart
  * @param {object} article 
@@ -109,7 +114,7 @@ function removeFromCart(article) {
 }
 /**
  * change quantity of article
- * @param {*} e 
+ * @param {Event} e 
  */
 function changeQuantity(e) {
   const inputQuantity = e.target;
@@ -145,7 +150,7 @@ function getTotalProducts(cart) {
 /**
  * sum of prices
  * @param {object} product 
- * @returns 
+ * @returns number
  */
 async function getTotalPrice(product) {
   totalPrice += product.quantity * product.price;
@@ -168,7 +173,7 @@ const regexEmail = /^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9
 /**
  * check if value is true or false so if the texte is valid
  * @param {string} value 
- * @returns 
+ * @returns boolean
  */
 function isTextValid(value) {
   if (value.search(regexText) !== 0) {

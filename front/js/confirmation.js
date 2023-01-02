@@ -6,7 +6,7 @@ init()
 
 /**
  * get order id from post
- * @returns 
+ * @returns URL
  */
 function getOrderId() {
     return new URL(location.href).searchParams.get("orderId");
