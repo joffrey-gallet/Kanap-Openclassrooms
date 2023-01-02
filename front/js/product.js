@@ -37,10 +37,11 @@ async function getProduct(productId) {
  * @param {object} product 
  */
 function displayProduct(product) {
+    document.title = product.name;
     document.querySelector(".item__img").innerHTML = `<img src="${product.imageUrl}" alt="${product.altTxt}">`
-    document.querySelector("#title").innerHTML = `${product.name}`;
-    document.querySelector("#price").innerHTML = `${product.price}`;
-    document.querySelector("#description").innerHTML = `${product.description}`;
+    document.querySelector("#title").innerHTML = product.name;
+    document.querySelector("#price").innerHTML = product.price;
+    document.querySelector("#description").innerHTML = product.description;
 
     for (let colors of product.colors) {
         const optionColors = document.querySelector("#colors")
